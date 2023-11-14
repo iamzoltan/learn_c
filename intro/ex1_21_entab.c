@@ -4,18 +4,19 @@
 #define TABWIDTH 4      /* tab size */ 
 
 int my_getline(char line[], int maxline);
-void detab(char to[], char from[]);
+void entab(char to[], char from[]);
 
 
 main()
 {
   int len;                    /* current line length */ 
   char line[MAXLINE];         /* current input line */
-  char detab_line[MAXLINE];   /* detabbed line */
+  char entab_line[MAXLINE];   /* detabbed line */
 
-  while ((len = my_getline(line, MAXLINE)) > 0)
-    detab(detab_line, line);
-    printf("%s", detab_line);
+  while ((len = my_getline(line, MAXLINE)) > 0) {
+    entab(entab_line, line);
+    printf("%s", entab_line);
+  }
   return 0;
 }
 
@@ -34,18 +35,24 @@ int my_getline(char line[], int lim)
   return i;
 }
 
-/* detab: replace tab with blanks in line; does not handle the limit */
-void detab(char to[], char from[])
+/* entab: replace blanks with tab in line; does not handle the limit */
+void entab(char to[], char from[])
 {
   int i, j, k;
 
   i = j = k = 0;
   while ((to[j] = from[i]) != '\0') {
-    if (to[j] == '\t')
-      for (k = 0; k < TABWIDTH; ++k, ++j) 
-        to[j] = ' ';
-    else
-      ++j;
+    if (from[i] == ' ') {
+      ++k;
+      if (k == TABWIDTH) {
+        k = 0;
+        j = j - TABWIDTH;
+        to[j] = '\t';
+      }
+    } else {
+      k = 0;
+    }
+    ++j;
     ++i;
   }
 }
